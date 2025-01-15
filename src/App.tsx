@@ -5,18 +5,14 @@ import TaskList from './components/TaskList';
 import TaskFilter from './components/TaskFilter';
 import { Task } from './types/task';
 
-const App: React.FC = () => {
-  const [tasks, setTasks] = useState<Task[]>([]);
+const App = () => {
+  const [tasks, setTasks] = useState<Task[]>(() => {
+    const savedTasks = localStorage.getItem('tasks');
+    return savedTasks ? JSON.parse(savedTasks) : [];
+  });
   const [filter, setFilter] = useState<string>('all');
   const [newTask, setNewTask] = useState<Partial<Task>>({});
   const [editTask, setEditTask] = useState<Task | null>(null);
-
-  useEffect(() => {
-    const savedTasks = localStorage.getItem('tasks');
-    if (savedTasks) {
-      setTasks(JSON.parse(savedTasks));
-    }
-  }, []);
 
   useEffect(() => {
     localStorage.setItem('tasks', JSON.stringify(tasks));
@@ -67,7 +63,7 @@ const App: React.FC = () => {
   return (
     <Container maxWidth="sm">
       <Typography variant="h4" align="center" gutterBottom>
-        Task Manager
+        ToDo Application
       </Typography>
 
       <TaskForm task={newTask} setTask={setNewTask} onSubmit={handleAddTask} />
