@@ -1,8 +1,5 @@
-import React from 'react';
-import { TextField, Button, FormControl } from '@mui/material';
-import { Task, TaskFormProps } from '../types/task';
-
-
+import { TextField, Button, FormControl, Select, MenuItem } from '@mui/material';
+import { TaskFormProps } from '../types/task';
 
 const TaskForm = ({ task, setTask, onSubmit }: TaskFormProps) => {
   return (
@@ -29,6 +26,16 @@ const TaskForm = ({ task, setTask, onSubmit }: TaskFormProps) => {
           value={task.dueDate || ''}
           onChange={(e) => setTask({ ...task, dueDate: e.target.value })}
         />
+      </FormControl>
+      <FormControl fullWidth margin="normal">
+        <Select
+          value={task.priority || 'Medium'}
+          onChange={(e) => setTask({ ...task, priority: e.target.value as 'High' | 'Medium' | 'Low' })}
+        >
+          <MenuItem value="High">High</MenuItem>
+          <MenuItem value="Medium">Medium</MenuItem>
+          <MenuItem value="Low">Low</MenuItem>
+        </Select>
       </FormControl>
       <Button variant="contained" color="primary" onClick={onSubmit}>
         Add Task

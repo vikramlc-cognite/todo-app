@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Container, Typography, Dialog, DialogActions, DialogContent, DialogTitle, Button, TextField } from '@mui/material';
+import { Container, Typography, Dialog, DialogActions, DialogContent, DialogTitle, Button, TextField, MenuItem, Select } from '@mui/material';
 import TaskForm from './components/TaskForm';
 import TaskList from './components/TaskList';
 import TaskFilter from './components/TaskFilter';
@@ -10,6 +10,7 @@ const App: React.FC = () => {
   const [filter, setFilter] = useState<string>('all');
   const [newTask, setNewTask] = useState<Partial<Task>>({});
   const [editTask, setEditTask] = useState<Task | null>(null);
+  const [confirmDelete, setConfirmDelete] = useState<Task | null>(null);
 
   useEffect(() => {
     const savedTasks = localStorage.getItem('tasks');
@@ -31,6 +32,7 @@ const App: React.FC = () => {
       description: newTask.description || '',
       dueDate: newTask.dueDate || '',
       completed: false,
+      priority: newTask.priority || 'Medium',
     };
 
     setTasks([...tasks, newTaskObject]);
@@ -42,6 +44,7 @@ const App: React.FC = () => {
   };
 
   const handleToggleComplete = (id: string) => {
+    console.log('Toggling task with id:', id);
     setTasks(
       tasks.map((task) =>
         task.id === id ? { ...task, completed: !task.completed } : task
@@ -56,6 +59,10 @@ const App: React.FC = () => {
       );
       setEditTask(null);
     }
+  };
+
+  const handleReorder = (newOrder: Task[]) => {
+    setTasks(newOrder);
   };
 
   const filteredTasks = tasks.filter((task) => {
@@ -75,9 +82,30 @@ const App: React.FC = () => {
       <TaskList
         tasks={filteredTasks}
         onToggleComplete={handleToggleComplete}
-        onDelete={handleDeleteTask}
+        onDelete={(id) => setConfirmDelete(tasks.find((task) => task.id === id) || null)}
         onEdit={setEditTask}
+        onReorder={handleReorder}
       />
+
+      {confirmDelete && (
+        <Dialog open={!!confirmDelete} onClose={() => setConfirmDelete(null)}>
+          <DialogTitle>Confirm Delete</DialogTitle>
+          <DialogContent>
+            Are you sure you want to delete this task?
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={() => setConfirmDelete(null)}>Cancel</Button>
+            <Button
+              onClick={() => {
+                handleDeleteTask(confirmDelete.id);
+                setConfirmDelete(null);
+              }}
+            >
+              Delete
+            </Button>
+          </DialogActions>
+        </Dialog>
+      )}
 
       {editTask && (
         <Dialog open={!!editTask} onClose={() => setEditTask(null)}>
@@ -112,6 +140,17 @@ const App: React.FC = () => {
                 setEditTask({ ...editTask, dueDate: e.target.value })
               }
             />
+            <Select
+              fullWidth
+              value={editTask.priority || 'Medium'}
+              onChange={(e) =>
+                setEditTask({ ...editTask, priority: e.target.value as 'High' | 'Medium' | 'Low' })
+              }
+            >
+              <MenuItem value="High">High</MenuItem>
+              <MenuItem value="Medium">Medium</MenuItem>
+              <MenuItem value="Low">Low</MenuItem>
+            </Select>
           </DialogContent>
           <DialogActions>
             <Button onClick={() => setEditTask(null)} color="secondary">
