@@ -1,8 +1,5 @@
-import React from 'react';
 import { TextField, Button, FormControl } from '@mui/material';
-import { Task, TaskFormProps } from '../types/task';
-
-
+import { TaskFormProps } from '../types/task';
 
 const TaskForm = ({ task, setTask, onSubmit }: TaskFormProps) => {
   return (

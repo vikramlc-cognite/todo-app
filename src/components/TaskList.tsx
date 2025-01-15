@@ -1,17 +1,19 @@
-import React from 'react';
 import {
   List,
   ListItem,
   ListItemText,
   ListItemSecondaryAction,
-  IconButton,
   Checkbox,
-} from '@mui/material';
-import { Task, TaskListProps } from '../types/task';
+  Button,
+} from "@mui/material";
+import { TaskListProps } from "../types/task";
 
-
-
-const TaskList = ({ tasks, onToggleComplete, onDelete, onEdit }: TaskListProps) => {
+const TaskList = ({
+  tasks,
+  onToggleComplete,
+  onDelete,
+  onEdit,
+}: TaskListProps) => {
   return (
     <List>
       {tasks.map((task) => (
@@ -22,13 +24,13 @@ const TaskList = ({ tasks, onToggleComplete, onDelete, onEdit }: TaskListProps) 
           />
           <ListItemText
             primary={task.title}
-            secondary={`${task.description || 'No description'} - ${
-              task.dueDate || 'No due date'
+            secondary={`${task.description || "No description"} - ${
+              task.dueDate || "No due date"
             }`}
           />
           <ListItemSecondaryAction>
-            <IconButton edge="end" onClick={() => onEdit(task)} />
-            <IconButton edge="end" onClick={() => onDelete(task.id)} />
+            <Button onClick={() => onEdit(task)}>Edit</Button>
+            <Button onClick={() => onDelete(task.id)}>Delete</Button>
           </ListItemSecondaryAction>
         </ListItem>
       ))}
