@@ -3,7 +3,6 @@ import {
   ListItem,
   ListItemText,
   ListItemSecondaryAction,
-  IconButton,
   Checkbox,
   Button,
 } from "@mui/material";
@@ -23,14 +22,12 @@ import {
 } from "@dnd-kit/sortable";
 import { useSortable } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import { useState } from "react";
 
 const SortableItem = ({
   task,
-  isSelected,
   onDelete,
   onEdit,
-  toggleSelection
+  onToggleComplete
 }: SortableListProps) => {
   const { attributes, listeners, setNodeRef, transform, transition } = useSortable({
     id: task.id,
@@ -39,7 +36,7 @@ const SortableItem = ({
   const style = {
     transform: CSS.Transform.toString(transform),
     transition,
-    backgroundColor: isSelected ? '#f0f0f0' : 'inherit',
+    backgroundColor: task.completed ? '#f0f0f0' : 'inherit',
     cursor: 'pointer',
   };
 
@@ -50,8 +47,10 @@ const SortableItem = ({
       {...attributes}
       {...listeners}
       divider
-      onClick={() => toggleSelection(task.id)}
     >
+      <Checkbox checked={task.completed} onMouseDown={() => {
+        onToggleComplete(task.id);
+      }} />
       <ListItemText
         primary={task.title}
         secondary={`${task.description || 'No description'} - ${
@@ -66,18 +65,8 @@ const SortableItem = ({
   );
 };
 
-const TaskList = ({ tasks, onDelete, onEdit, onReorder }: TaskListProps) => {
-  const [selectedTasks, setSelectedTasks] = useState<string[]>([]);
-
+const TaskList = ({ tasks, onDelete, onEdit, onReorder, onToggleComplete }: TaskListProps) => {
   const sensors = useSensors(useSensor(MouseSensor), useSensor(TouchSensor));
-
-  const toggleSelection = (id: string) => {
-    setSelectedTasks((prevSelected) =>
-      prevSelected.includes(id)
-        ? prevSelected.filter((taskId) => taskId !== id)
-        : [...prevSelected, id]
-    );
-  };
 
   const handleDragEnd = ({ active, over }: { active: any; over: any }) => {
     if (active.id !== over.id) {
@@ -98,8 +87,7 @@ const TaskList = ({ tasks, onDelete, onEdit, onReorder }: TaskListProps) => {
               task={task}
               onDelete={onDelete}
               onEdit={onEdit}
-              isSelected={selectedTasks.includes(task.id)}
-              toggleSelection={toggleSelection}
+              onToggleComplete={onToggleComplete}
             />
           ))}
         </List>

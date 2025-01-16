@@ -27,8 +27,7 @@ export type TaskListProps = {
 };
 export type SortableListProps = {
   task: Task;
-  isSelected: boolean;
   onDelete: any;
   onEdit: any;
-  toggleSelection: (id: string) => void;
+  onToggleComplete: (id: string) => void;
 };

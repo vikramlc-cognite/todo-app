@@ -6,7 +6,10 @@ import TaskFilter from './components/TaskFilter';
 import { Task } from './types/task';
 
 const App: React.FC = () => {
-  const [tasks, setTasks] = useState<Task[]>([]);
+  const [tasks, setTasks] = useState<Task[]>(() => {
+    const savedTasks = localStorage.getItem('tasks');
+    return savedTasks ? JSON.parse(savedTasks) : [];
+  });
   const [filter, setFilter] = useState<string>('all');
   const [newTask, setNewTask] = useState<Partial<Task>>({});
   const [editTask, setEditTask] = useState<Task | null>(null);
