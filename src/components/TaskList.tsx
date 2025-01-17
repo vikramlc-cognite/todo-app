@@ -69,6 +69,7 @@ const TaskList = ({ tasks, onDelete, onEdit, onReorder, onToggleComplete }: Task
   const sensors = useSensors(useSensor(MouseSensor), useSensor(TouchSensor));
 
   const handleDragEnd = ({ active, over }: { active: any; over: any }) => {
+    if (!over) return;
     if (active.id !== over.id) {
       const oldIndex = tasks.findIndex((task) => task.id === active.id);
       const newIndex = tasks.findIndex((task) => task.id === over.id);

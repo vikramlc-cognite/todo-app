@@ -4,6 +4,7 @@ import TaskForm from './components/TaskForm';
 import TaskList from './components/TaskList';
 import TaskFilter from './components/TaskFilter';
 import { Task } from './types/task';
+import TaskSearch from './components/TaskSearch';
 
 const App: React.FC = () => {
   const [tasks, setTasks] = useState<Task[]>(() => {
@@ -14,6 +15,7 @@ const App: React.FC = () => {
   const [newTask, setNewTask] = useState<Partial<Task>>({});
   const [editTask, setEditTask] = useState<Task | null>(null);
   const [confirmDelete, setConfirmDelete] = useState<Task | null>(null);
+  const [searchQuery, setSearchQuery] = useState<string>('');
 
   useEffect(() => {
     const savedTasks = localStorage.getItem('tasks');
@@ -74,6 +76,10 @@ const App: React.FC = () => {
     return true;
   });
 
+  const searchedTasks = filteredTasks.filter((task) =>
+    task.title.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
   return (
     <Container maxWidth="sm">
       <Typography variant="h4" align="center" gutterBottom>
@@ -82,8 +88,9 @@ const App: React.FC = () => {
 
       <TaskForm task={newTask} setTask={setNewTask} onSubmit={handleAddTask} />
       <TaskFilter filter={filter} setFilter={setFilter} />
+      <TaskSearch searchQuery={searchQuery} setSearchQuery={setSearchQuery} />
       <TaskList
-        tasks={filteredTasks}
+        tasks={searchedTasks}
         onToggleComplete={handleToggleComplete}
         onDelete={(id) => setConfirmDelete(tasks.find((task) => task.id === id) || null)}
         onEdit={setEditTask}
