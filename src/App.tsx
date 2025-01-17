@@ -6,7 +6,7 @@ import TaskFilter from './components/TaskFilter';
 import { Task } from './types/task';
 import TaskSearch from './components/TaskSearch';
 
-const App: React.FC = () => {
+const App = () => {
   const [tasks, setTasks] = useState<Task[]>(() => {
     const savedTasks = localStorage.getItem('tasks');
     return savedTasks ? JSON.parse(savedTasks) : [];
