@@ -83,7 +83,7 @@ const App: React.FC = () => {
   return (
     <Container maxWidth="sm">
       <Typography variant="h4" align="center" gutterBottom>
-        Task Manager
+        ToDo Application
       </Typography>
 
       <TaskForm task={newTask} setTask={setNewTask} onSubmit={handleAddTask} />
